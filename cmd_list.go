@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	doneMark1 = "\u2610"
-	doneMark2 = "\u2611"
+	doneMark1 = "\033[1;31m\u2610\033[0m"
+	doneMark2 = "\033[1;32m\u2611\033[0m"
 )
 
 func makeCmdList(filename string) *commander.Command {
@@ -38,13 +38,12 @@ func makeCmdList(filename string) *commander.Command {
 			line := string(b)
 			if len(args) > 0 {
 				for _, t := range args {
-					line = strings.ReplaceAll(line, "#"+t, "\033[1;31m#"+t+"\033[0m")
+					line = strings.ReplaceAll(line, "#"+t, fmt.Sprintf("\033[1;31m#%s\033[0m", t))
 				}
 			}
-
 			if strings.HasPrefix(line, "-") {
 				if !nflag {
-					fmt.Printf("\033[1;32m%s\033[0m %03d: %s\n", doneMark2, n, strings.TrimSpace(line[1:]))
+					fmt.Printf("%s %03d: %s\n", doneMark2, n, strings.TrimSpace(line[1:]))
 				}
 			} else {
 				fmt.Printf("%s %03d: %s\n", doneMark1, n, strings.TrimSpace(line))
