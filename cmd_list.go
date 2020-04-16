@@ -38,24 +38,16 @@ func makeCmdList(filename string) *commander.Command {
 			line := string(b)
 			if len(args) > 0 {
 				for _, t := range args {
-					if strings.Contains(line, "#"+t) {
-						if strings.HasPrefix(line, "-") {
-							if !nflag {
-								fmt.Printf("%s %03d: %s\n", doneMark2, n, strings.TrimSpace(line[1:]))
-							}
-						} else {
-							fmt.Printf("%s %03d: %s\n", doneMark1, n, strings.TrimSpace(line))
-						}
-					}
+					line = strings.ReplaceAll(line, "#"+t, "\033[1;31m#"+t+"\033[0m")
+				}
+			}
+
+			if strings.HasPrefix(line, "-") {
+				if !nflag {
+					fmt.Printf("\033[1;32m%s\033[0m %03d: %s\n", doneMark2, n, strings.TrimSpace(line[1:]))
 				}
 			} else {
-				if strings.HasPrefix(line, "-") {
-					if !nflag {
-						fmt.Printf("%s %03d: %s\n", doneMark2, n, strings.TrimSpace(line[1:]))
-					}
-				} else {
-					fmt.Printf("%s %03d: %s\n", doneMark1, n, strings.TrimSpace(line))
-				}
+				fmt.Printf("%s %03d: %s\n", doneMark1, n, strings.TrimSpace(line))
 			}
 			n++
 
