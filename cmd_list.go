@@ -19,7 +19,6 @@ const (
 func makeCmdList(filename string) *commander.Command {
 	cmdList := func(cmd *commander.Command, args []string) error {
 		nflag := cmd.Flag.Lookup("n").Value.Get().(bool)
-
 		f, err := os.Open(filename)
 		if err != nil {
 			return err
@@ -49,7 +48,6 @@ func makeCmdList(filename string) *commander.Command {
 				fmt.Printf("%s %03d: %s\n", doneMark1, n, strings.TrimSpace(line))
 			}
 			n++
-
 		}
 		return nil
 	}
