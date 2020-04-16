@@ -19,6 +19,7 @@ const (
 func makeCmdList(filename string) *commander.Command {
 	cmdList := func(cmd *commander.Command, args []string) error {
 		nflag := cmd.Flag.Lookup("n").Value.Get().(bool)
+
 		f, err := os.Open(filename)
 		if err != nil {
 			return err
@@ -35,12 +36,26 @@ func makeCmdList(filename string) *commander.Command {
 				break
 			}
 			line := string(b)
-			if strings.HasPrefix(line, "-") {
-				if !nflag {
-					fmt.Printf("%s %03d: %s\n", doneMark2, n, strings.TrimSpace(line[1:]))
+			if len(args) > 0 {
+				for _, t := range args {
+					if strings.Contains(line, "#"+t) {
+						if strings.HasPrefix(line, "-") {
+							if !nflag {
+								fmt.Printf("%s %03d: %s\n", doneMark2, n, strings.TrimSpace(line[1:]))
+							}
+						} else {
+							fmt.Printf("%s %03d: %s\n", doneMark1, n, strings.TrimSpace(line))
+						}
+					}
 				}
 			} else {
-				fmt.Printf("%s %03d: %s\n", doneMark1, n, strings.TrimSpace(line))
+				if strings.HasPrefix(line, "-") {
+					if !nflag {
+						fmt.Printf("%s %03d: %s\n", doneMark2, n, strings.TrimSpace(line[1:]))
+					}
+				} else {
+					fmt.Printf("%s %03d: %s\n", doneMark1, n, strings.TrimSpace(line))
+				}
 			}
 			n++
 
