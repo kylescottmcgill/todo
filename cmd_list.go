@@ -12,8 +12,13 @@ import (
 )
 
 const (
-	doneMark1 = "\033[1;31m\u2610\033[0m"
-	doneMark2 = "\033[1;32m\u2611\033[0m"
+	red       = "\033[1;31m"
+	green     = "\033[1;32m"
+	yellow    = "\033[1;33m"
+	gray      = "\033[1;90m"
+	reset     = "\033[0m"
+	doneMark1 = red + "\u2610" + reset
+	doneMark2 = green + "\u2611" + reset
 )
 
 func makeCmdList(filename string) *commander.Command {
@@ -35,18 +40,36 @@ func makeCmdList(filename string) *commander.Command {
 				break
 			}
 			line := string(b)
-			if len(args) > 0 {
-				for _, t := range args {
-					line = strings.ReplaceAll(line, "#"+t, fmt.Sprintf("\033[1;31m#%s\033[0m", t))
+
+			if strings.Contains(line, "#") {
+				var highlighted strings.Builder
+
+				for _, s := range strings.Split(line, " ") {
+					if strings.HasPrefix(s, "#") {
+						highlighted.WriteString(fmt.Sprintf("%s%s%s ", gray, s, reset))
+					} else {
+						highlighted.WriteString(s + " ")
+					}
+					line = highlighted.String()
+				}
+
+				if len(args) > 0 {
+					for _, t := range args {
+						line = strings.ReplaceAll(line, "#"+t, fmt.Sprintf("%s#%s", yellow, t))
+					}
 				}
 			}
+
 			if strings.HasPrefix(line, "-") {
-				if !nflag {
-					fmt.Printf("%s %03d: %s\n", doneMark2, n, strings.TrimSpace(line[1:]))
-				}
+				line = fmt.Sprintf("%s %03d: %s", doneMark2, n, strings.TrimSpace(line[1:]))
 			} else {
-				fmt.Printf("%s %03d: %s\n", doneMark1, n, strings.TrimSpace(line))
+				line = fmt.Sprintf("%s %03d: %s", doneMark1, n, strings.TrimSpace(line))
 			}
+
+			if !nflag {
+				fmt.Println(line)
+			}
+
 			n++
 		}
 		return nil
