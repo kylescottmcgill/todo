@@ -42,20 +42,20 @@ func makeCmdList(filename string) *commander.Command {
 			line := string(b)
 
 			if strings.Contains(line, "#") {
-				var highlighted strings.Builder
+				var h strings.Builder
 
 				for _, s := range strings.Split(line, " ") {
 					if strings.HasPrefix(s, "#") {
-						highlighted.WriteString(fmt.Sprintf("%s%s%s ", gray, s, reset))
+						h.WriteString(fmt.Sprintf("%s%s%s ", gray, s, reset))
 					} else {
-						highlighted.WriteString(s + " ")
+						h.WriteString(fmt.Sprintf("%s ", s))
 					}
-					line = highlighted.String()
+					line = h.String()
 				}
 
 				if len(args) > 0 {
 					for _, t := range args {
-						line = strings.ReplaceAll(line, "#"+t, fmt.Sprintf("%s#%s", yellow, t))
+						line = strings.ReplaceAll(line, fmt.Sprintf("#%s", t), fmt.Sprintf("%s#%s", yellow, t))
 					}
 				}
 			}
