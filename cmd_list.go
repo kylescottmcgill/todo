@@ -41,11 +41,11 @@ func makeCmdList(filename string) *commander.Command {
 			}
 			line := string(b)
 
-			if strings.Contains(line, "#") {
+			if strings.Contains(line, "[") {
 				var h strings.Builder
 
 				for _, s := range strings.Split(line, " ") {
-					if strings.HasPrefix(s, "#") {
+					if strings.HasPrefix(s, "[") {
 						h.WriteString(fmt.Sprintf("%s%s%s ", gray, s, reset))
 					} else {
 						h.WriteString(fmt.Sprintf("%s ", s))
@@ -55,7 +55,7 @@ func makeCmdList(filename string) *commander.Command {
 
 				if len(args) > 0 {
 					for _, t := range args {
-						line = strings.ReplaceAll(line, fmt.Sprintf("#%s", t), fmt.Sprintf("%s#%s", yellow, t))
+						line = strings.ReplaceAll(line, fmt.Sprintf("[%s", t), fmt.Sprintf("%s[%s", yellow, t))
 					}
 				}
 			}
